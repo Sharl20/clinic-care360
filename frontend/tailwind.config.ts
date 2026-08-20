@@ -12,6 +12,8 @@ export default {
       boxShadow: { card: "0 14px 45px -22px rgba(28, 38, 48, 0.25)" },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 } satisfies Config;
 

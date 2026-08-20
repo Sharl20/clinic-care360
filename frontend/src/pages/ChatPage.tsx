@@ -1,3 +1,4 @@
+import ReactMarkdown from "react-markdown";
 import { Check, Clipboard, CornerDownLeft, MessageCirclePlus, PanelLeft, RotateCcw, Send, ThumbsDown, ThumbsUp, Mic, ExternalLink } from "lucide-react";
 import { FormEvent, useMemo, useState } from "react";
 import { EmergencyCard } from "../components/EmergencyCard";
@@ -16,7 +17,7 @@ export function ChatPage({ initialPrompt }: { initialPrompt?: string }) {
   const [error, setError] = useState<string>();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [copied, setCopied] = useState<string>();
-  
+
   // حالة الاستماع الصوتي للميكروفون
   const [isListening, setIsListening] = useState(false);
 
@@ -28,7 +29,7 @@ export function ChatPage({ initialPrompt }: { initialPrompt?: string }) {
       setIsListening(false);
       return;
     }
-    
+
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       setError("Your browser does not support voice input. Please try using Google Chrome.");
@@ -36,11 +37,11 @@ export function ChatPage({ initialPrompt }: { initialPrompt?: string }) {
     }
 
     const recognition = new SpeechRecognition();
-    recognition.lang = 'ar-EG'; 
+    recognition.lang = 'ar-EG';
     recognition.interimResults = true;
-    
+
     recognition.onstart = () => setIsListening(true);
-    
+
     recognition.onresult = (event: any) => {
       const transcript = Array.from(event.results)
         .map((result: any) => result[0].transcript)
@@ -54,7 +55,7 @@ export function ChatPage({ initialPrompt }: { initialPrompt?: string }) {
     };
 
     recognition.onend = () => setIsListening(false);
-    
+
     recognition.start();
   };
 
@@ -113,8 +114,9 @@ export function ChatPage({ initialPrompt }: { initialPrompt?: string }) {
                       <EmergencyCard arabic={isArabic(message.body)} />
                     </div>
                   )}
-                  <div className="whitespace-pre-wrap">{message.body}</div>
-                  
+                  <div className="whitespace-pre-wrap prose prose-teal max-w-none text-sm leading-7">
+                    <ReactMarkdown>{message.body}</ReactMarkdown>
+                  </div>
                   {/* أزرار المصادر التفاعلية (تظهر مباشرة أسفل الإجابة بشكل أنيق ومضغوط) */}
                   {message.reply && message.reply.sources.length > 0 && (
                     <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center gap-2">
@@ -169,7 +171,7 @@ export function ChatPage({ initialPrompt }: { initialPrompt?: string }) {
             </div>
 
             <form onSubmit={submit} className="flex items-end gap-3 rounded-3xl border border-teal-200 bg-white p-2.5 shadow-sm transition-all focus-within:border-teal-500 focus-within:ring-4 focus-within:ring-teal-500/10">
-              <button 
+              <button
                 type="button"
                 onClick={toggleListening}
                 className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-all duration-300 ${isListening ? 'bg-red-600 text-white animate-pulse shadow-lg shadow-red-500/30' : 'bg-teal-50 text-teal-700 hover:bg-teal-100'}`}
@@ -178,13 +180,13 @@ export function ChatPage({ initialPrompt }: { initialPrompt?: string }) {
                 <Mic size={19} />
               </button>
 
-              <textarea 
-                rows={2} 
-                value={draft} 
-                onChange={(event) => setDraft(event.target.value)} 
-                placeholder={isListening ? "Listening now... Speak clearly!" : "Ask a general health question or describe symptoms…"} 
-                className="min-h-12 flex-1 resize-none border-0 bg-transparent px-3 py-2 text-sm text-slate-800 outline-none placeholder:text-slate-400" 
-                maxLength={4000} 
+              <textarea
+                rows={2}
+                value={draft}
+                onChange={(event) => setDraft(event.target.value)}
+                placeholder={isListening ? "Listening now... Speak clearly!" : "Ask a general health question or describe symptoms…"}
+                className="min-h-12 flex-1 resize-none border-0 bg-transparent px-3 py-2 text-sm text-slate-800 outline-none placeholder:text-slate-400"
+                maxLength={4000}
               />
               <button disabled={!draft.trim() || loading} className="button-primary h-12 w-12 rounded-2xl p-0 shrink-0" aria-label="Send question"><Send size={18} /></button>
             </form>
