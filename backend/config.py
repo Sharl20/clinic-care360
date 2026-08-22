@@ -17,7 +17,7 @@ EMBEDDING_MODEL_NAME = "Qwen/Qwen3-Embedding-0.6B"
 RERANKER_MODEL_NAME = "BAAI/bge-reranker-base"
 
 
-GROQ_API_KEY = "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"
+GROQ_API_KEY = "API-key"
 LLM_MODEL_NAME = "openai/gpt-oss-120b"
 CONDITION_MAP = {
     "low back pain": "1.",
